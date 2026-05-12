@@ -1,0 +1,239 @@
+{
+  "info": {
+    "name": "Library Management API",
+    "_postman_id": "lib-mgmt-001",
+    "description": "Complete Postman collection for Library Management System.\n\n**Quick Start:**\n1. Run POST /api/auth/login to get a JWT token\n2. Set the token in the collection variable `jwt_token`\n3. Use any endpoint",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:8080", "type": "string" },
+    { "key": "jwt_token", "value": "", "type": "string" }
+  ],
+  "auth": {
+    "type": "bearer",
+    "bearer": [{ "key": "token", "value": "{{jwt_token}}", "type": "string" }]
+  },
+  "item": [
+    {
+      "name": "1. Authentication",
+      "item": [
+        {
+          "name": "Login as Librarian",
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "var json = pm.response.json();",
+                  "pm.collectionVariables.set('jwt_token', json.data.token);",
+                  "pm.test('Login successful', function() { pm.response.to.have.status(200); });"
+                ]
+              }
+            }
+          ],
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"librarian\",\n  \"password\": \"librarian123\"\n}"
+            },
+            "url": "{{base_url}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Login as Member",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"member1\",\n  \"password\": \"member123\"\n}"
+            },
+            "url": "{{base_url}}/api/auth/login"
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Books",
+      "item": [
+        {
+          "name": "Add New Book",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Introduction to Algorithms\",\n  \"author\": \"Thomas H. Cormen\",\n  \"isbn\": \"9780262033848\"\n}"
+            },
+            "url": "{{base_url}}/api/books"
+          }
+        },
+        {
+          "name": "Get All Books",
+          "request": { "method": "GET", "url": "{{base_url}}/api/books" }
+        },
+        {
+          "name": "Get Available Books",
+          "request": { "method": "GET", "url": "{{base_url}}/api/books/available" }
+        },
+        {
+          "name": "Get Book by ID",
+          "request": { "method": "GET", "url": "{{base_url}}/api/books/1" }
+        },
+        {
+          "name": "Search Books",
+          "request": { "method": "GET", "url": "{{base_url}}/api/books/search?keyword=clean" }
+        },
+        {
+          "name": "Update Book",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Clean Code (2nd Edition)\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"9780132350884\"\n}"
+            },
+            "url": "{{base_url}}/api/books/1"
+          }
+        },
+        {
+          "name": "Delete Book",
+          "request": { "method": "DELETE", "url": "{{base_url}}/api/books/7" }
+        }
+      ]
+    },
+    {
+      "name": "3. Members",
+      "item": [
+        {
+          "name": "Register Member",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"David Brown\",\n  \"email\": \"david@college.edu\",\n  \"phone\": \"9876543220\"\n}"
+            },
+            "url": "{{base_url}}/api/members"
+          }
+        },
+        {
+          "name": "Get All Members",
+          "request": { "method": "GET", "url": "{{base_url}}/api/members" }
+        },
+        {
+          "name": "Get Member by ID",
+          "request": { "method": "GET", "url": "{{base_url}}/api/members/1" }
+        },
+        {
+          "name": "Get Books Issued to Member",
+          "request": { "method": "GET", "url": "{{base_url}}/api/members/1/issues" }
+        },
+        {
+          "name": "Update Member",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Alice Johnson\",\n  \"email\": \"alice.new@college.edu\",\n  \"phone\": \"9876543210\"\n}"
+            },
+            "url": "{{base_url}}/api/members/1"
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Issue & Return",
+      "item": [
+        {
+          "name": "Issue Book",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookId\": 1,\n  \"memberId\": 1\n}"
+            },
+            "url": "{{base_url}}/api/issues/issue"
+          }
+        },
+        {
+          "name": "Issue Book 2",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookId\": 2,\n  \"memberId\": 1\n}"
+            },
+            "url": "{{base_url}}/api/issues/issue"
+          }
+        },
+        {
+          "name": "Return Book (issueId=1)",
+          "request": { "method": "PUT", "url": "{{base_url}}/api/issues/return/1" }
+        },
+        {
+          "name": "Get All Issues",
+          "request": { "method": "GET", "url": "{{base_url}}/api/issues" }
+        },
+        {
+          "name": "Get Active Issues",
+          "request": { "method": "GET", "url": "{{base_url}}/api/issues/active" }
+        },
+        {
+          "name": "Get Issue by ID",
+          "request": { "method": "GET", "url": "{{base_url}}/api/issues/1" }
+        }
+      ]
+    },
+    {
+      "name": "5. Error Cases",
+      "item": [
+        {
+          "name": "Issue Unavailable Book (expect 409)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"bookId\": 1,\n  \"memberId\": 2\n}"
+            },
+            "url": "{{base_url}}/api/issues/issue"
+          }
+        },
+        {
+          "name": "Invalid Login (expect 401)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"username\": \"librarian\",\n  \"password\": \"wrong\"\n}"
+            },
+            "url": "{{base_url}}/api/auth/login"
+          }
+        },
+        {
+          "name": "Book Not Found (expect 404)",
+          "request": { "method": "GET", "url": "{{base_url}}/api/books/9999" }
+        },
+        {
+          "name": "Duplicate ISBN (expect 409)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Clean Code Copy\",\n  \"author\": \"Robert C. Martin\",\n  \"isbn\": \"9780132350884\"\n}"
+            },
+            "url": "{{base_url}}/api/books"
+          }
+        }
+      ]
+    }
+  ]
+}
